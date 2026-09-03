@@ -1,0 +1,91 @@
+{
+  "name": "@tgriesser/db-loader-utils",
+  "version": "0.1.0",
+  "description": "DataLoader boilerplate for kysely & knex",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@10.29.2",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./knex": {
+      "import": {
+        "types": "./dist/knex.d.ts",
+        "default": "./dist/knex.js"
+      },
+      "require": {
+        "types": "./dist/knex.d.cts",
+        "default": "./dist/knex.cjs"
+      }
+    },
+    "./kysely": {
+      "import": {
+        "types": "./dist/kysely.d.ts",
+        "default": "./dist/kysely.js"
+      },
+      "require": {
+        "types": "./dist/kysely.d.cts",
+        "default": "./dist/kysely.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm format:check && pnpm typecheck && pnpm test && pnpm build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "dataloader": "^2.2.3"
+  },
+  "peerDependencies": {
+    "knex": ">=2",
+    "kysely": ">=0.27"
+  },
+  "peerDependenciesMeta": {
+    "knex": {
+      "optional": true
+    },
+    "kysely": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^26.4.1",
+    "@vitest/coverage-v8": "5.0.0",
+    "better-sqlite3": "^13.0.3",
+    "husky": "^9.1.7",
+    "knex": "^3.3.0",
+    "kysely": "^0.29.5",
+    "lint-staged": "^17.4.1",
+    "prettier": "^3.9.6",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.0"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
+  }
+}
