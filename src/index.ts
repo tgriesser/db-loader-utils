@@ -1,4 +1,12 @@
 export { DBLoaderUtils } from './core/db-loader-utils'
+export { LoaderRegistry, type LoaderRegistryOptions } from './core/loader-registry'
+export {
+  RedisLoaderUtils,
+  type Pattern,
+  type RedisAdapter,
+  type RedisLoaderUtilsOptions,
+  type Reply,
+} from './core/redis-loader-utils'
 export { NotFoundError } from './core/errors'
 export { createDefineScope } from './core/scope'
 export type {

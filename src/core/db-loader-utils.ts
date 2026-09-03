@@ -1,6 +1,7 @@
-import DataLoader, { type BatchLoadFn } from 'dataloader'
+import type DataLoader from 'dataloader'
 import type { Adapter, Row } from './adapter'
 import { NotFoundError } from './errors'
+import { LoaderRegistry } from './loader-registry'
 import { bindScope } from './scope'
 import type {
   BoundScope,
@@ -15,45 +16,18 @@ import type {
   Table,
 } from './types'
 
-const DEFAULT_MAX_BATCH_SIZE = 5000
-
-export class DBLoaderUtils<DB, QB extends QueryBuilderKind<DB>> {
-  readonly loaders = new Map<string, DataLoader<any, any, any>>()
+export class DBLoaderUtils<DB, QB extends QueryBuilderKind<DB>> extends LoaderRegistry {
   private readonly scopes = new Map<string, ScopeDef<any, any>>()
 
   constructor(
     protected readonly adapter: Adapter,
-    protected readonly options: DBLoaderUtilsOptions = {},
-  ) {}
-
-  /** Get-or-create a loader by key. Custom loaders registered here are cleared/disposed with the rest. */
-  loader<K, V, C = K>(
-    key: string,
-    batchFn: BatchLoadFn<K, V>,
-    options?: DataLoader.Options<K, V, C>,
-  ): DataLoader<K, V, C> {
-    let loader = this.loaders.get(key) as DataLoader<K, V, C> | undefined
-    if (!loader) {
-      const cache = options?.cache ?? this.options.cache ?? true
-      loader = new DataLoader<K, V, C>(batchFn, {
-        maxBatchSize: this.options.maxBatchSize ?? DEFAULT_MAX_BATCH_SIZE,
-        cache,
-        name: cache ? key : `${key}:nocache`,
-        ...options,
-      })
-      this.loaders.set(key, loader)
-    }
-    return loader
-  }
-
-  clearAll(): this {
-    for (const loader of this.loaders.values()) loader.clearAll()
-    return this
+    options: DBLoaderUtilsOptions = {},
+  ) {
+    super(options)
   }
 
   dispose(): void {
-    this.clearAll()
-    this.loaders.clear()
+    super.dispose()
     this.scopes.clear()
   }
 

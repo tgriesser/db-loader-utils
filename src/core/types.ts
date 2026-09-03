@@ -43,9 +43,4 @@ export interface ScopeOptions<QB> {
   scope?: ScopeArg<QB>
 }
 
-export interface DBLoaderUtilsOptions {
-  /** Upper bound on keys per batch, so `IN (...)` lists stay a sane size. Default 5000. */
-  maxBatchSize?: number
-  /** Passed to every DataLoader. `false` keeps batching but drops per-key memoization. */
-  cache?: boolean
-}
+export type { LoaderRegistryOptions as DBLoaderUtilsOptions } from './loader-registry'

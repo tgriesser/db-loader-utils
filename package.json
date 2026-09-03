@@ -1,8 +1,17 @@
 {
   "name": "@tgriesser/db-loader-utils",
   "version": "0.1.0",
-  "description": "DataLoader boilerplate for kysely & knex",
+  "description": "DataLoader boilerplate for kysely, knex, and redis",
   "license": "MIT",
+  "author": "Tim Griesser (https://github.com/tgriesser)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tgriesser/db-loader-utils"
+  },
+  "homepage": "https://github.com/tgriesser/db-loader-utils#readme",
+  "bugs": {
+    "url": "https://github.com/tgriesser/db-loader-utils/issues"
+  },
   "type": "module",
   "packageManager": "pnpm@10.29.2",
   "engines": {
@@ -45,6 +54,26 @@
         "types": "./dist/kysely.d.cts",
         "default": "./dist/kysely.cjs"
       }
+    },
+    "./ioredis": {
+      "import": {
+        "types": "./dist/ioredis.d.ts",
+        "default": "./dist/ioredis.js"
+      },
+      "require": {
+        "types": "./dist/ioredis.d.cts",
+        "default": "./dist/ioredis.cjs"
+      }
+    },
+    "./redis": {
+      "import": {
+        "types": "./dist/redis.d.ts",
+        "default": "./dist/redis.js"
+      },
+      "require": {
+        "types": "./dist/redis.d.cts",
+        "default": "./dist/redis.cjs"
+      }
     }
   },
   "scripts": {
@@ -56,18 +85,24 @@
     "format:check": "prettier --check .",
     "prepare": "husky"
   },
-  "dependencies": {
-    "dataloader": "^2.2.3"
-  },
   "peerDependencies": {
+    "dataloader": ">=2.1.0",
     "knex": ">=2",
-    "kysely": ">=0.27"
+    "kysely": ">=0.27",
+    "ioredis": ">=5",
+    "redis": ">=4"
   },
   "peerDependenciesMeta": {
     "knex": {
       "optional": true
     },
     "kysely": {
+      "optional": true
+    },
+    "ioredis": {
+      "optional": true
+    },
+    "redis": {
       "optional": true
     }
   },
@@ -77,13 +112,16 @@
     "@vitest/coverage-v8": "5.0.0",
     "better-sqlite3": "^13.0.3",
     "husky": "^9.1.7",
+    "ioredis": "^6.0.0",
     "knex": "^3.3.0",
     "kysely": "^0.29.5",
     "lint-staged": "^17.4.1",
     "prettier": "^3.9.6",
+    "redis": "^6.2.1",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.0",
+    "dataloader": "^2.2.3"
   },
   "lint-staged": {
     "*": "prettier --write --ignore-unknown"

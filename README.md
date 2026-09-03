@@ -1,8 +1,10 @@
 # @tgriesser/db-loader-utils
 
-DataLoader boilerplate for [kysely](https://kysely.dev) and [knex](https://knexjs.org).
-Every loader lives in a single `Map` on the instance, so a request-scoped
-instance can clear or dispose all of them at once.
+DataLoader boilerplate for [kysely](https://kysely.dev), [knex](https://knexjs.org),
+and Redis via [ioredis](https://github.com/redis/ioredis) or
+[node-redis](https://github.com/redis/node-redis). Every loader lives in a single
+`Map` on the instance, so a request-scoped instance can clear or dispose all of
+them at once.
 
 ```sh
 pnpm add @tgriesser/db-loader-utils dataloader
@@ -78,6 +80,33 @@ Constructor options apply to every loader in the map:
 - `maxBatchSize` (default 5000) caps the number of keys per `IN (...)`.
 - `cache: false` keeps batching but drops per-key memoization, for instances
   that outlive a single request.
+
+## Redis
+
+The Redis entrypoints share the same registry (`loader`, `loaders`, `clearAll`,
+`dispose`, `maxBatchSize`, `cache`) but are keyed by key patterns rather than
+tables. Each pattern has one `{placeholder}` that the loaded id fills in.
+
+```ts
+import { IoredisLoaderUtils } from '@tgriesser/db-loader-utils/ioredis'
+// or: import { NodeRedisLoaderUtils } from '@tgriesser/db-loader-utils/redis'
+
+interface Cache {
+  'user:{id}': User // JSON string
+  'profile:{id}': { email: string } // hash
+  'followers:{id}': string[] // set
+}
+const cache = new IoredisLoaderUtils<Cache>(redis)
+
+await cache.get('user:{id}').load(1) // User | null, one MGET per batch
+await cache.hash('profile:{id}').load(1) // { email } | null, pipelined HGETALL
+await cache.hashField('profile:{id}', 'email').load(1) // string | null, pipelined HGET
+await cache.members('followers:{id}').load(1) // string[], pipelined SMEMBERS
+cache.key('user:{id}', 1) // 'user:1'
+```
+
+`get` decodes with `JSON.parse` by default; pass `decode(raw, key)` in the
+options for anything else. A value that fails to decode rejects only its own key.
 
 ### Other query builders
 

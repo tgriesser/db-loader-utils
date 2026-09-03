@@ -87,3 +87,42 @@ assert<Equal<ReturnType<typeof kn.byColumn<'users', 'id'>>, DataLoader<number, U
 kn.byColumn('users', 'id', { scope: named })
 // @ts-expect-error unknown table in scope definition
 knexScope('nope', 'bad', (qb) => qb)
+
+// redis
+import type { Redis } from 'ioredis'
+import type { createClient } from 'redis'
+import { IoredisLoaderUtils } from '../src/ioredis'
+import { NodeRedisLoaderUtils } from '../src/redis'
+
+interface Cache {
+  'user:{id}': UserRow
+  'profile:{id}': { email: string }
+  'followers:{id}': string[]
+  plain: string
+}
+declare const ioredis: Redis
+declare const nodeRedis: ReturnType<typeof createClient>
+const ir = new IoredisLoaderUtils<Cache>(ioredis)
+const nr = new NodeRedisLoaderUtils<Cache>(nodeRedis)
+assert<Equal<ReturnType<typeof ir.get<'user:{id}'>>, DataLoader<string | number, UserRow | null>>>()
+assert<
+  Equal<
+    ReturnType<typeof nr.hash<'profile:{id}'>>,
+    DataLoader<string | number, { email: string } | null>
+  >
+>()
+assert<
+  Equal<
+    ReturnType<typeof ir.hashField<'profile:{id}', 'email'>>,
+    DataLoader<string | number, string | null>
+  >
+>()
+assert<
+  Equal<ReturnType<typeof ir.members<'followers:{id}'>>, DataLoader<string | number, string[]>>
+>()
+// @ts-expect-error a pattern needs a {placeholder}
+ir.get('plain')
+// @ts-expect-error unknown pattern
+ir.get('nope:{id}')
+// @ts-expect-error unknown field
+ir.hashField('profile:{id}', 'nope')
