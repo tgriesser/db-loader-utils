@@ -10,3 +10,13 @@ export class NotFoundError extends Error {
     this.name = 'NotFoundError'
   }
 }
+
+export class RowNotFoundError extends Error {
+  constructor(
+    readonly table: string,
+    readonly where: Record<string, unknown>,
+  ) {
+    super(`No row in "${table}" matching ${JSON.stringify(where)}`)
+    this.name = 'RowNotFoundError'
+  }
+}
