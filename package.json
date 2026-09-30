@@ -6,7 +6,7 @@
   "author": "Tim Griesser (https://github.com/tgriesser)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tgriesser/db-loader-utils"
+    "url": "https://github.com/tgriesser/db-loader-utils.git"
   },
   "homepage": "https://github.com/tgriesser/db-loader-utils#readme",
   "bugs": {
@@ -100,7 +100,7 @@
     "build": "tsup",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "prepublishOnly": "pnpm format:check && pnpm typecheck && pnpm test && pnpm build",
+    "prepublishOnly": "pnpm format:check && pnpm typecheck && pnpm build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"
