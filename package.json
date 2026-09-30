@@ -1,6 +1,6 @@
 {
   "name": "@tgriesser/db-loader-utils",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "DataLoader boilerplate and table-bound query helpers for kysely, knex, and redis",
   "license": "MIT",
   "author": "Tim Griesser (https://github.com/tgriesser)",
